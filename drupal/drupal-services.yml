@@ -1,0 +1,11 @@
+version: "2"
+
+services:
+  drupal-cli:
+    build: ./cli
+  drupal-solr:
+    build: ./solr
+    expose:
+      - 8983
+    ports:
+      - 8983:8983

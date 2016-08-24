@@ -1,0 +1,52 @@
+version: "2"
+services:
+  web-php7:
+    build: ./web-php7
+    expose:
+      - "80"
+      - "9000"
+    ports:
+      - "80:80"
+      - "9000:9000"
+    volumes:
+      - "logs:/var/logs/httpd"
+      - "./web-php7/etc/php.d/00-general.ini:/etc/php.d/00-general.ini"
+      - "./web-php7/etc/httpd/conf/httpd.conf:/etc/httpd/conf/httpd.conf"
+      - "./web-php7/etc/httpd/vhosts.d:/etc/httpd/vhosts.d"
+  web:
+    build: ./web
+    expose:
+      - "80"
+    ports:
+      - "80:80"
+    volumes:
+      - "logs:/var/logs/httpd"
+      - "./web/etc/php.d/00-general.ini:/etc/php.d/00-general.ini"
+      - "./web/etc/httpd/conf/httpd.conf:/etc/httpd/conf/httpd.conf"
+      - "./web/etc/httpd/vhosts.d:/etc/httpd/vhosts.d"
+      - "./web/root/.bash_profile:/root/.bash_profile"
+  db:
+    image: percona:5.6
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpw
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpw
+      MYSQL_DATABASE: userdb
+    volumes:
+      - "logs:/var/logs/mysql"
+      - "logs:/var/logs/mysql.err"
+      - "logs:/var/logs/mysql.log"
+      - "/var/lib/mysql"
+  cache:
+    image: redis:latest
+  mailcatcher:
+    image: schickling/mailcatcher:latest
+    expose:
+      - "1025"
+    ports:
+      - "1025:1025"
+      - "1080:1080"

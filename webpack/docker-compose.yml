@@ -1,0 +1,9 @@
+version: "2"
+
+services:
+
+  webpack:
+    build: ./
+    environment:
+      build: "PATH TO BUILD"
+      commando: "run watch"

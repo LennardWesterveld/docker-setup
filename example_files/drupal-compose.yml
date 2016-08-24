@@ -1,0 +1,49 @@
+version: '2'
+services:
+  web:
+    extends:
+      file: ../docker/general/general-services.yml
+      service: web-php7
+    links:
+      - db:database
+      - solr
+      - mailcatcher
+    volumes:
+      - ../:/var/www
+  db:
+    extends:
+      file: ../docker/general/general-services.yml
+      service: db
+    environment:
+      MYSQL_USER: webdev
+      MYSQL_PASSWORD: webdev
+      MYSQL_DATABASE: drupal
+      MYSQL_ROOT_PASSWORD: webdev
+  drupal-cli:
+    extends:
+      file: ../docker/drupal/drupal-services.yml
+      service: drupal-cli
+    links:
+      - db:database
+    volumes_from:
+      - web
+  solr:
+    extends:
+      file: ../docker/drupal/drupal-services.yml
+      service: drupal-solr
+  mailcatcher:
+    extends:
+      file: ../docker/general/general-services.yml
+      service: mailcatcher
+#  webpack:
+#    extends:
+#      file: ../docker/webpack/docker-compose.yml
+#      service: webpack
+#    environment:
+#      build: "BUILD LOCATION"
+#    volumes_from:
+#      - web
+#global volumes
+volumes:
+  logs: ~
+
